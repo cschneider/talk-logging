@@ -1,10 +1,13 @@
-From logging to monitoring to reactive insights
------------------------------------------------
+# From logging to monitoring to reactive insights
 
 Demo project for the talk.
 
-Setup Karaf with Decanter, Elasticsearch and Kibana
-----------------------------------------------------
+## Setup Elasticsearch and Kibana
+
+Download and start elastic search and kibana.
+Use the default settings.
+
+## Setup Apache Karaf and decanter
 
 * Download and Unpack Apache Karaf 4.1.2
 
@@ -12,19 +15,8 @@ Setup Karaf with Decanter, Elasticsearch and Kibana
 bin/karaf
 ```
 
-
-Install Elastichsearch with Kibana and Decanter
 ```
 feature:repo-add decanter 1.4.0
-feature:install elasticsearch kibana
-config:property-set -p org.ops4j.pax.web org.osgi.service.http.port 8182
-
-```
-
-In a second karaf install
-```
-feature:repo-add decanter 1.4.0
-feature:install elasticsearch
 feature:install decanter-collector-log decanter-collector-jmx decanter-collector-eventadmin decanter-appender-elasticsearch-rest
 feature:repo-add mvn:org.apache.karaf.rcomp/rcomp-features/1.0.0-SNAPSHOT/xml/features
 feature:install rcomp-eventadmin reactor
@@ -34,11 +26,11 @@ install -s  mvn:net.lr.talk.logging/reactor-flows/1.0.0-SNAPSHOT
 install -s  mvn:net.lr.talk.logging/sample-rest/1.0.0-SNAPSHOT
 ```
 
-This installs elasticsearch and kibana into karaf. This is great for testing but on production these should
-be deployed separately. We install the decanter log and jmx collectors and the elasticsearch appender. This is enough to get started.
+This installs some decanter collectors and the elastic search appender.
+We also install reactive components and a CXF Rest example to show the message logging and 
+some possibilities for extensions.
 
-Check config
-------------
+## Check config
 
 The default configurations are fine but we should take a look to understand what is going on.
 
@@ -46,26 +38,35 @@ etc/org.apache.karaf.decanter.collector.log.cfg
 etc/org.apache.karaf.decanter.collector.jmx-local.cfg
 etc/org.apache.karaf.decanter.appender.elasticsearch.rest.cfg
 
-Open Kibana
-------------
+## Open Kibana
 
-[Open Kibana in browser](http://localhost:8181/kibana) and log in with karaf/karaf.
-If there is not yet a suitable index config then go to settings and set the index to karaf-*.
+[Open Kibana in browser](http://localhost:5601/).
+For the first time configure the index in Management/Index Patterns and set the index to karaf-*.
+You might need to refresh this index later whenever you get new fields.
 
-Check the log and system dashboards
------------------------------------
-
+## Create some searches and visualizations 
 
 
-Look for some logs
-------------------
+### Create these searches
 
-In Discovery search for type:log.
-You should now see all log messages.
-Add some fields MDC.bundle_name, level, message
+* LOG
+    _type=log
+* CXF Messages
+    _type=log loggerName:org.apache.cxf.services.*
+* Operating System JMX Bean
+    ObjectName:"java.lang:type=OperatingSystem"
+    
+Base on the searches create suitable visualizations and dashboards
 
-Look for some jmx beans
------------------------
+### Dashboards
+
+You can create these Dashboards to get a good overview of what can be monitored
+
+* OS: Visualization for Operting Systzem JMX bean with P
+* Log: Visualzations for level.KEYWORD and loggername.KEYWORD and table with log details
+* CXF Messages: Visualization for MDC.ResponseCode.keyword and table with MDC.type, MDC.slf4j_marker, MDC.exchangeId, MDC.address, message
+
+
 
 
 
