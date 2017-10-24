@@ -17,7 +17,7 @@ import reactor.core.publisher.Flux;
 @SuppressWarnings("rawtypes")
 public class BundleRuntime {
     
-    @Reference
+    @Reference(target="(name=eventAdmin)")
     RComponent eventAdmin;
     
     Map<String, Long> startedTimePerBundle = new HashMap<>();
@@ -31,7 +31,6 @@ public class BundleRuntime {
         from = eventAdmin.from("org/osgi/framework/BundleEvent/*", Map.class);
         to = eventAdmin.to("decanter/collect/bundle_runtime", Map.class);
         Flux.from(from)
-                .log()
                 .map(event -> computeRunningTime(event))
                 .filter(event -> !event.isEmpty())
                 .subscribe(to);

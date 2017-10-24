@@ -66,7 +66,15 @@ You can create these Dashboards to get a good overview of what can be monitored
 * Log: Visualzations for level.KEYWORD and loggername.KEYWORD and table with log details
 * CXF Messages: Visualization for MDC.ResponseCode.keyword and table with MDC.type, MDC.slf4j_marker, MDC.exchangeId, MDC.address, message
 
+### Check reactive processes
 
+The FastEmitter produces elements too fast
+event:tail net/lr/fast
 
+The Sampler makes sure we get only one sample per second
+event:tail decanter/collect/sampled
+
+In Kibana
+event_topics:"decanter/collect/sampled"
 
 

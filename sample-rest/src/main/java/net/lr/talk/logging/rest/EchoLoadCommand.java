@@ -30,6 +30,7 @@ public class EchoLoadCommand {
     }
 
     public void start(Integer percentFail) {
+    		stop();
         scheduleAtFixedRate = executor.scheduleAtFixedRate(new CallService(percentFail), 0, 200, TimeUnit.MILLISECONDS);
     }
     
